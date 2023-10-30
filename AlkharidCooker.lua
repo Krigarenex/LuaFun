@@ -90,7 +90,7 @@ local function withdrawFood()
     for _, foodInfo in ipairs(foodThresholds) do
         if currentlvl >= foodInfo.minLevel and currentlvl <= foodInfo.maxLevel then
             API.RandomSleep2(600, 600, 600)
-            API.DoAction_Interface(0xffffffff, 0xffffffff, 1, 517, 39, -1, 5392)
+            API.DoAction_Interface(0xffffffff, 0xffffffff, 1, 517, 39, -1, API.OFF_ACT_GeneralInterface_route)
             API.RandomSleep2(600, 600, 600)
             API.DoAction_Bank(foodInfo.foodID, 7, 6112)
             print("Retrieving item with id: " .. foodInfo.foodID)
@@ -108,7 +108,7 @@ while API.Read_LoopyLoop() do
     API.DoRandomEvents()
     ::continue::
     if not API.isProcessing() then
-        API.DoAction_Object1(0x5,80,{ 76274 },50)
+        API.DoAction_Object1(0x5,API.OFF_ACT_GeneralObject_route1,{ 76274 },50)
         API.RandomSleep2(1250, 1000, 1200)
         API.WaitUntilMovingEnds()
         API.RandomSleep2(2000, 2000, 2000)
@@ -117,7 +117,7 @@ while API.Read_LoopyLoop() do
         withdrawFood()
         else goto continue
         end
-            API.DoAction_Object1(0x40,0,{ 76295 },50)
+            API.DoAction_Object1(0x40,API.OFF_ACT_GeneralObject_route0,{ 76295 },50)
             API.RandomSleep2(1250, 1000, 1200)
             API.WaitUntilMovingEnds()
             API.RandomSleep2(2000, 2000, 2000)
