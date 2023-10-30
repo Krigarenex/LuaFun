@@ -128,6 +128,5 @@ while API.Read_LoopyLoop() do
         API.RandomSleep2(1200, 1200, 1200)
     end
     printProgressReport()
-    API.RandomSleep2(1200, 1200, 1200) -- denna l�ste det
-    -- nu fanns det mindre �n 120 energy s� den stoppa script
+    API.RandomSleep2(1200, 1200, 1200)
 end
