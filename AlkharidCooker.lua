@@ -117,6 +117,13 @@ while API.Read_LoopyLoop() do
         withdrawFood()
         else goto continue
         end
+        API.RandomSleep2(800, 700, 600)
+        API.KeyboardPress2(0x1B, 50, 150)
+        API.RandomSleep2(800, 700, 600)
+        if API.Invfreecount_() > 25 then
+            print("We had no food left so wew broke the script")
+            break
+        end
             API.DoAction_Object1(0x40,API.OFF_ACT_GeneralObject_route0,{ 76295 },50)
             API.RandomSleep2(1250, 1000, 1200)
             API.WaitUntilMovingEnds()
@@ -128,5 +135,5 @@ while API.Read_LoopyLoop() do
         API.RandomSleep2(1200, 1200, 1200)
     end
     printProgressReport()
-    API.RandomSleep2(1200, 1200, 1200)
+    API.RandomSleep2(1200, 1200, 1200) 
 end
