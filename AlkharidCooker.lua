@@ -117,6 +117,9 @@ while API.Read_LoopyLoop() do
         withdrawFood()
         else goto continue
         end
+        if API.Invfreecount_() > 25 then
+            break
+        end
             API.DoAction_Object1(0x40,API.OFF_ACT_GeneralObject_route0,{ 76295 },50)
             API.RandomSleep2(1250, 1000, 1200)
             API.WaitUntilMovingEnds()
