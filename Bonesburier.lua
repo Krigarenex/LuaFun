@@ -1,17 +1,24 @@
---[[ #### Boneburier Script ####
+--[[
+    @name Boneburier
+    @description Buries bones at GE with powder of burials
+    @author Krigaren
+    @version 1.0
+
+#### Boneburier Script ####
 
 What it Does:
 --------------
-Boneburier automates the process of burying specific bones whilst using Powder of Burials. 
+Buries bones whilst using Powder of Burials. 
 If there are no bones or Powder of Burials present in your inventory after attempting to withdraw, the script will halt.
 
 Instructions:
 --------------
-1. Put the desired bones in your preset 1. Ensure they are in the list on line 26. If not, easily add them.
+1. Put the desired bones in your preset 1. Ensure they are in the list on line 124. If not, easily add them.
 2. Ensure you have Powder of Burials inside your bank.
 3. Assign the following keybinds:
    - A: Bury the selected bone (make sure it's in your hotbar)
    - X: Use Powder of Burials (ensure it's in your hotbar)
+4. Grand exchange in Varrock
 
 List of Supported Bones:
 ------------------------
