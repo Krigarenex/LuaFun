@@ -177,13 +177,13 @@ while API.Read_LoopyLoop() do
 
       if readPowderofBurial() then
           withdrawPowder()
-
+          API.RandomSleep2(1200, 1200, 1400)
           if API.InvStackSize(52805) < 1 then
               break
           end
       else
           withdrawBones()
-
+          API.RandomSleep2(1200, 1200, 1400)
           if not weHasBones() then
               break 
           end
