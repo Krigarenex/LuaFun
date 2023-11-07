@@ -155,8 +155,12 @@ local function withdrawPowder()
       API.RandomSleep2(1000, 1000, 1000)
       API.KeyboardPress2(0x1B, 50, 150)
       API.RandomSleep2(2000, 2000, 2000)
+      if API.InvStackSize(52805) < 1 then
+        API.Write_LoopyLoop(false)
+      else
       API.KeyboardPress2(0x58, 50, 150)
       API.RandomSleep2(1000, 1000, 1000)
+      end
 end
 
 
@@ -174,7 +178,7 @@ local function readPowderofBurial()
 end
 
 setupGUI()
-
+API.Write_LoopyLoop(true)
 while API.Read_LoopyLoop() do
   drawGUI()
   API.DoRandomEvents()
@@ -185,14 +189,11 @@ while API.Read_LoopyLoop() do
       if readPowderofBurial() then
           withdrawPowder()
           API.RandomSleep2(1200, 1200, 1400)
-          if API.InvStackSize(52805) < 1 then
-              break
-          end
       else
           withdrawBones()
           API.RandomSleep2(1200, 1200, 1400)
           if not weHasBones() then
-              break 
+              break
           end
       end
   else
