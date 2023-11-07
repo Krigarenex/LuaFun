@@ -139,7 +139,7 @@ end
 local function openBank()
   if not API.BankOpen2() then
   API.DoAction_NPC(API.OFF_ACT_InteractNPC_route, 3120, { 3418 }, 50)
-  API.RandomSleep(2000, 1200, 1600)
+  API.RandomSleep(2000, 1800, 1800)
   end
 end
 
