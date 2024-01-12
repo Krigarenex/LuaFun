@@ -138,7 +138,7 @@ end
 
 local function openBank()
   if not API.BankOpen2() then
-  API.DoAction_NPC(API.OFF_ACT_InteractNPC_route, 3120, { 3418 }, 50)
+  API.DoAction_NPC(0x5, API.OFF_ACT_InteractNPC_route, {3418}, 50)
   API.RandomSleep(2000, 1800, 1800)
   end
 end
@@ -151,7 +151,7 @@ local function withdrawBones()
 
 local function withdrawPowder()
       API.RandomSleep2(800, 1000, 1000)
-      API.DoAction_Bank(52805, 1, 5392)
+      API.DoAction_Bank(52805, 1, API.OFF_ACT_GeneralInterface_route)
       API.RandomSleep2(1000, 1000, 1000)
       API.KeyboardPress2(0x1B, 50, 150)
       API.RandomSleep2(2000, 2000, 2000)
