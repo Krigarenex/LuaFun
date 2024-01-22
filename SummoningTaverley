@@ -1,0 +1,157 @@
+local API = require("api")
+local fails = 0
+local startXp = API.GetSkillXP("SUMMONING")
+local skill = "SUMMONING"
+local startTime, afk = os.time(), os.time()
+local currentlvl = API.XPLevelTable(API.GetSkillXP(skill))
+local idleTimeThreshold = math.random(153, 189) -- Random number between 180 (3 minutes) and 300 (5 minutes)
+
+--[[Charms
+Blue = 12163
+Crimson = 12160
+Water talisman = 1444
+
+Change charm ID and INGREDIENT ID to 
+whichever you want to use
+--]]
+local IDS = {
+    SPIRIT_SHARD = 12183,
+    POUCH = 12155,
+    OBELISK = {67036},
+    CHARM = 12163,
+    INGREDIENT = 1444,
+    BANK_COUNTER = {66666}
+}
+-- GUI PART, THANKS HIGGINS
+local function round(val, decimal)
+    if decimal then
+        return math.floor((val * 10 ^ decimal) + 0.5) / (10 ^ decimal)
+    else
+        return math.floor(val + 0.5)
+    end
+end
+local function formatNumberWithCommas(amount)
+    local formatted = tostring(amount)
+    while true do
+        formatted, k = string.gsub(formatted, "^(-?%d+)(%d%d%d)", '%1,%2')
+        if (k == 0) then break end
+    end
+    return formatted
+end
+function formatNumber(num)
+    if num >= 1e6 then
+        return string.format("%.1fM", num / 1e6)
+    elseif num >= 1e3 then
+        return string.format("%.1fK", num / 1e3)
+    else
+        return tostring(num)
+    end
+end
+local function formatElapsedTime(startTime)
+    local currentTime = os.time()
+    local elapsedTime = currentTime - startTime
+    local hours = math.floor(elapsedTime / 3600)
+    local minutes = math.floor((elapsedTime % 3600) / 60)
+    local seconds = elapsedTime % 60
+    return string.format("[%02d:%02d:%02d]", hours, minutes, seconds)
+end
+local function calcProgressPercentage(skill, currentExp)
+    local currentLevel = API.XPLevelTable(API.GetSkillXP(skill))
+    if currentLevel == 120 then return 100 end
+    local nextLevelExp = XPForLevel(currentLevel + 1)
+    local currentLevelExp = XPForLevel(currentLevel)
+    local progressPercentage = (currentExp - currentLevelExp) /
+                                   (nextLevelExp - currentLevelExp) * 100
+    return math.floor(progressPercentage)
+end
+local function printProgressReport(final)
+    local skill = "SUMMONING"
+    local currentXp = API.GetSkillXP(skill)
+    local elapsedMinutes = (os.time() - startTime) / 60
+    local diffXp = math.abs(currentXp - startXp)
+    local xpPH = round((diffXp * 60) / elapsedMinutes)
+    local time = formatElapsedTime(startTime)
+    local currentLevel = API.XPLevelTable(API.GetSkillXP(skill))
+    local xplvlup = API.XPForLevel(currentLevel + 1)
+    local timeNeeded = round(((xplvlup - currentXp) / xpPH) * 60)
+    IGP.radius = calcProgressPercentage(skill, API.GetSkillXP(skill)) / 100
+    IGP.string_value = time .. " | " ..
+                           string.lower(skill):gsub("^%l", string.upper) .. ": " ..
+                           currentLevel .. " | XP/H: " .. formatNumber(xpPH) ..
+                           " | XP: " .. formatNumber(diffXp)
+end
+local function setupGUI()
+    IGP = API.CreateIG_answer()
+    IGP.box_start = FFPOINT.new(5, 5, 0)
+    IGP.box_name = "PROGRESSBAR"
+    IGP.colour = ImColor.new(116, 2, 179);
+    IGP.string_value = "SUMMONING"
+end
+-- end of GUI PART
+
+local function isAtObelisk() return API.PInArea(2930, 5, 3448, 5, 0) end
+
+local function isAtBank() return API.PInArea(2877, 10, 3417, 10, 0) end
+
+local function obeliskOpen() return (API.VB_FindPSett(2874, 0).state == 1310738) end
+
+---- unused VB part
+local function hasMaterialsVB() return (API.VB_FindPSett(8846, 0).state == 24) end
+
+local function hasMaterials()
+    return API.InvStackSize(IDS.CHARM) > 5 and
+               API.InvStackSize(IDS.SPIRIT_SHARD) > 5 and
+               API.InvStackSize(IDS.POUCH) > 5 and
+               API.InvItemcount_1(IDS.INGREDIENT) > 2
+end
+
+local function walkToBank()
+    if not isAtBank() then
+        API.DoAction_WalkerW(WPOINT.new(2875, 3417, 0))
+        API.RandomSleep2(1000, 1500, 1000)
+        API.WaitUntilMovingEnds()
+    end
+end
+
+local function walkToObelisk()
+    API.DoAction_WalkerW(WPOINT.new(2932, 3448, 0))
+    API.RandomSleep2(1000, 1500, 1000)
+    API.WaitUntilMovingEnds()
+end
+
+function drawGUI() DrawProgressBar(IGP) end
+
+setupGUI()
+while API.Read_LoopyLoop() do
+    drawGUI()
+    if not hasMaterials() then fails = fails + 1 end
+
+    if hasMaterials() then
+        fails = 0
+        if isAtObelisk() then
+            if obeliskOpen() then
+                print("obelisk open")
+                API.KeyboardPress2(0x20, 50, 150)
+                API.RandomSleep2(1000, 600, 1300)
+            else
+                API.DoAction_Object1(0x29, API.OFF_ACT_GeneralObject_route0,
+                                     IDS.OBELISK, 50)
+                API.RandomSleep2(1000, 600, 1300)
+            end
+        else
+            walkToObelisk()
+        end
+    else
+        walkToBank()
+    end
+
+    if isAtBank() and not hasMaterials() then
+        API.DoAction_Object1(0x33, API.OFF_ACT_GeneralObject_route3,
+                             IDS.BANK_COUNTER, 50)
+        API.RandomSleep2(600, 300, 300)
+    end
+
+    if fails > 5 then break end
+    printProgressReport()
+    API.RandomSleep2(300, 300, 300)
+end
