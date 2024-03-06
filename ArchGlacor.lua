@@ -56,7 +56,7 @@ local IDS = {
     BANKCHEST = {114750},
     ALTAR = {114748},
     FOOD = {rocktail = {15272}},
-    ARCH_GLACOR = {121222}
+    ARCH_GLACOR = {28241}
 }
 
 local function antiIdleTask()
